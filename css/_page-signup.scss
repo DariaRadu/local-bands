@@ -1,0 +1,25 @@
+//PAGE SIGNUP
+
+#formSignUpBand{
+  display:none;
+}
+
+#formSignupVenue{
+  display:none;
+}
+
+#loginBox {
+  width: 60%;
+  margin: 5% auto;
+  text-align: center;
+
+  #formLogin {
+    input {
+      text-align: center;
+    }
+  }
+
+  p {
+    cursor: pointer;
+  }
+}

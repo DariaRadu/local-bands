@@ -1,0 +1,30 @@
+//FONTS & VARIABLES
+
+@import url('https://fonts.googleapis.com/css?family=Lato|Roboto');
+@import "_variables";
+@import "_general";
+@import "_page-home";
+@import "_page-bands-venues";
+@import "_page-signup";
+
+//MAP
+
+#map, #mapModal{
+  height:500px;
+  width:500px;
+}
+
+//CALENDAR
+
+#calendar{
+  height:100px;
+  width:600px;
+}
+
+//SEARCH FUNCTION
+
+#searchResultsContainer{
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows:repeat(3, 1fr);
+}

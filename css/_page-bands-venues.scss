@@ -1,0 +1,139 @@
+
+//PAGE BANDS
+
+#pageUser{
+  img{
+    max-width:500px;
+  }
+}
+
+#bandsContainer{
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows:repeat(3, 1fr);
+}
+
+.bandDiv{
+  text-align: center;
+  font-family: $bodyFont;
+  margin: 3%;
+  img{
+    height:200px;
+    object-fit: cover
+  }
+}
+
+#modalInfo{
+  height: 100vh;
+  width:80vw;
+
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  &::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    //-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+    background-color: $primaryColor;
+    height: 10px;
+  }
+
+  header {
+    text-align: center;
+  }
+
+  img{
+    width:300px;
+    /*margin-left: 50%;
+    transform:translate(-50%);*/
+  }
+
+  #modalContent {
+    padding: 2%;
+
+    .content {
+      text-align: center;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-areas:
+              "img desc desc desc"
+              "img adr email phn"
+              "map map map map"
+              "input input input aud"
+              "book book book book"
+
+    }
+
+
+    .venueImage {
+      grid-area: img;
+    }
+    .venueDescription {
+      grid-area: desc;
+      text-align: center;
+      padding: 0 2%;
+    }
+    .venueAddress {
+      grid-area: adr;
+    }
+    .venueEmail {
+      grid-area: email;
+    }
+    .venuePhone {
+      grid-area: phn;
+    }
+    #mapModal {
+      grid-area: map;
+      margin: 3% 50%;
+      transform: translate(-50%);
+    }
+    .bandImage {
+      grid-area: img;
+    }
+    .bandDescription{
+      grid-area: desc;
+      text-align: center;
+      padding: 0 2%;
+    }
+    .bandGenre {
+      grid-area: adr;
+    }
+    .email {
+      grid-area: email;
+    }
+    .bandPhoneNumber {
+      grid-area: phn;
+    }
+    .bandAudio {
+      grid-area: aud;
+      //margin-top: 15%;
+    }
+    .bandBooking {
+      grid-area: book;
+    }
+    #inputBooking {
+      grid-area: input;
+    }
+  }
+}
+
+
+//PAGE VENUES
+
+#venuesContainer{
+  display:grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows:repeat(3, 1fr);
+}
+
+.venueDiv{
+  margin: 3%;
+  img{
+    width:200px;
+  }
+}

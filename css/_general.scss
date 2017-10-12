@@ -1,0 +1,66 @@
+
+html {
+  &::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  &::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 0 0 10px 10px;
+    //-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5);
+    background-color: $primaryColor;
+    height: 10px;
+  }
+
+}
+
+h1,h2,h3,h4,h5 {
+  font-family: $headerFont;
+  letter-spacing: 1px;
+
+}
+
+p, div, ul, li, footer {
+  font-family: $bodyFont !important;
+}
+
+.page{
+  display:none;
+  text-align: center;
+
+  h2 {
+    font-size: 2.5em;
+  }
+}
+
+nav {
+  background-color: $primaryColor;
+  ul {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    li {
+      cursor: pointer;
+    }
+  }
+}
+
+.error{
+  color:red;
+}
+
+.btn, .btn-large {
+  background-color: $primaryColor !important;
+}
+
+.btnSeeMore {
+  margin-bottom: 3%;
+}
+
+.btnVenueSeeMore {
+  margin-bottom: 3%;
+}

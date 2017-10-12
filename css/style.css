@@ -1,0 +1,170 @@
+@import url("https://fonts.googleapis.com/css?family=Lato|Roboto");
+html::-webkit-scrollbar {
+  width: 5px; }
+html::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  border-radius: 10px; }
+html::-webkit-scrollbar-thumb {
+  border-radius: 0 0 10px 10px;
+  background-color: #FF9800;
+  height: 10px; }
+
+h1, h2, h3, h4, h5 {
+  font-family: "Roboto";
+  letter-spacing: 1px; }
+
+p, div, ul, li, footer {
+  font-family: "Lato" !important; }
+
+.page {
+  display: none;
+  text-align: center; }
+  .page h2 {
+    font-size: 2.5em; }
+
+nav {
+  background-color: #FF9800; }
+  nav ul {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around; }
+    nav ul li {
+      cursor: pointer; }
+
+.error {
+  color: red; }
+
+.btn, .btn-large {
+  background-color: #FF9800 !important; }
+
+.btnSeeMore {
+  margin-bottom: 3%; }
+
+.btnVenueSeeMore {
+  margin-bottom: 3%; }
+
+#pageHome {
+  color: white;
+  background-image: url("https://images.pexels.com/photos/78521/rock-concert-smoke-light-78521.jpeg?w=1260&h=750&auto=compress&cs=tinysrgb");
+  height: calc(100vh - 64px);
+  overflow-y: hidden; }
+  #pageHome .slides, #pageHome img {
+    height: 100vh !important; }
+  #pageHome button {
+    margin: 0; }
+
+#pageUser img {
+  max-width: 500px; }
+
+#bandsContainer {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr); }
+
+.bandDiv {
+  text-align: center;
+  font-family: "Lato";
+  margin: 3%; }
+  .bandDiv img {
+    height: 200px;
+    object-fit: cover; }
+
+#modalInfo {
+  height: 100vh;
+  width: 80vw; }
+  #modalInfo::-webkit-scrollbar {
+    width: 5px; }
+  #modalInfo::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    border-radius: 10px; }
+  #modalInfo::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: #FF9800;
+    height: 10px; }
+  #modalInfo header {
+    text-align: center; }
+  #modalInfo img {
+    width: 300px;
+    /*margin-left: 50%;
+    transform:translate(-50%);*/ }
+  #modalInfo #modalContent {
+    padding: 2%; }
+    #modalInfo #modalContent .content {
+      text-align: center;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-template-areas: "img desc desc desc" "img adr email phn" "map map map map" "input input input aud" "book book book book"; }
+    #modalInfo #modalContent .venueImage {
+      grid-area: img; }
+    #modalInfo #modalContent .venueDescription {
+      grid-area: desc;
+      text-align: center;
+      padding: 0 2%; }
+    #modalInfo #modalContent .venueAddress {
+      grid-area: adr; }
+    #modalInfo #modalContent .venueEmail {
+      grid-area: email; }
+    #modalInfo #modalContent .venuePhone {
+      grid-area: phn; }
+    #modalInfo #modalContent #mapModal {
+      grid-area: map;
+      margin: 3% 50%;
+      transform: translate(-50%); }
+    #modalInfo #modalContent .bandImage {
+      grid-area: img; }
+    #modalInfo #modalContent .bandDescription {
+      grid-area: desc;
+      text-align: center;
+      padding: 0 2%; }
+    #modalInfo #modalContent .bandGenre {
+      grid-area: adr; }
+    #modalInfo #modalContent .email {
+      grid-area: email; }
+    #modalInfo #modalContent .bandPhoneNumber {
+      grid-area: phn; }
+    #modalInfo #modalContent .bandAudio {
+      grid-area: aud; }
+    #modalInfo #modalContent .bandBooking {
+      grid-area: book; }
+    #modalInfo #modalContent #inputBooking {
+      grid-area: input; }
+
+#venuesContainer {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr); }
+
+.venueDiv {
+  margin: 3%; }
+  .venueDiv img {
+    width: 200px; }
+
+#formSignUpBand {
+  display: none; }
+
+#formSignupVenue {
+  display: none; }
+
+#loginBox {
+  width: 60%;
+  margin: 5% auto;
+  text-align: center; }
+  #loginBox #formLogin input {
+    text-align: center; }
+  #loginBox p {
+    cursor: pointer; }
+
+#map, #mapModal {
+  height: 500px;
+  width: 500px; }
+
+#calendar {
+  height: 100px;
+  width: 600px; }
+
+#searchResultsContainer {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr); }
+
+/*# sourceMappingURL=style.css.map */

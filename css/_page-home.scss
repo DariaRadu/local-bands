@@ -1,0 +1,15 @@
+//PAGE HOME
+
+#pageHome{
+  color:white;
+  //background-image:url("../images/concert.jpg");
+  background-image: url("https://images.pexels.com/photos/78521/rock-concert-smoke-light-78521.jpeg?w=1260&h=750&auto=compress&cs=tinysrgb");
+  height:calc(100vh - 64px);
+  overflow-y:hidden;
+  .slides,img{
+    height:100vh!important;
+  }
+  button{
+    margin:0;
+  }
+}
