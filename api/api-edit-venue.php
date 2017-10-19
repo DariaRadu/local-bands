@@ -5,7 +5,7 @@ error_reporting(E_ERROR | E_WARNING | E_PARSE);
 
 $sVenueData = file_get_contents("../data/venues.txt");
 $ajVenueData = json_decode($sVenueData);
-$venueId=$_SESSION['userId'];
+$venueId=$_GET['id'];
 
 for ($i=0;$i<count($ajVenueData);$i++){
     if($ajVenueData[$i]->id==$venueId){
@@ -34,7 +34,7 @@ for ($i=0;$i<count($ajVenueData);$i++){
         $ajVenueData[$i]=$jVenue;
         $sVenueData = json_encode($ajVenueData);
         file_put_contents("../data/venues.txt", $sVenueData);
-        echo '{"edit":"success","id": "'.$_SESSION['userId'].'"}';
+        echo '{"edit":"success","id": "'.$_GET['id'].'"}';
     }
 }
 

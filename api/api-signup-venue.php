@@ -29,6 +29,7 @@ if ($extension=="jpg" || $extension=="png"){
     $jVenue->image=$VenuePictureName;
 }else{
     echo '{"signup":"error","error": "Please upload only .jpg/.png image files"}';
+    exit;
 }
 
 

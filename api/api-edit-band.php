@@ -2,7 +2,7 @@
 session_start();
 $sBandData=file_get_contents("../data/bands.txt");
 $ajBandData=json_decode($sBandData);
-$bandId=$_SESSION['userId'];
+$bandId=$_GET['id'];
 
 for ($i=0;$i<count($ajBandData);$i++){
     if ($bandId==$ajBandData[$i]->id){

@@ -55,6 +55,12 @@ nav {
 
 #pageUser img {
   max-width: 500px; }
+#pageUser .bandInfo .content audio {
+  display: block;
+  width: 50%;
+  margin: 0 auto; }
+#pageUser .bandInfo .content .btn {
+  margin: 1.5%; }
 
 #bandsContainer {
   display: grid;
@@ -129,6 +135,9 @@ nav {
     #modalInfo #modalContent #inputBooking {
       grid-area: input; }
 
+#pageVenues #mapAll {
+  margin: 0 auto; }
+
 #venuesContainer {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -139,11 +148,25 @@ nav {
   .venueDiv img {
     width: 200px; }
 
-#formSignUpBand {
-  display: none; }
+.venueInfo .switch, .venueInfo .btn {
+  margin: 3%; }
+.venueInfo .containerElement #map {
+  margin: 0 auto; }
 
-#formSignupVenue {
-  display: none; }
+#checkSignupType .btn {
+  width: 30%;
+  margin: 1.5% auto; }
+
+#formSignUpVenue, #formSignUpBand {
+  display: none;
+  margin: 20px 100px; }
+  #formSignUpVenue label, #formSignUpBand label {
+    margin: 5%; }
+    #formSignUpVenue label textarea, #formSignUpBand label textarea {
+      min-height: 10em; }
+  #formSignUpVenue #btnSignupVenue, #formSignUpVenue #btnSignupBand, #formSignUpBand #btnSignupVenue, #formSignUpBand #btnSignupBand {
+    width: 50%;
+    margin: 3% auto; }
 
 #loginBox {
   width: 60%;

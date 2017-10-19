@@ -7,7 +7,6 @@ $venueId=$_GET['id'];
 for ($i=0;$i<count($ajVenueData);$i++){
     if ($ajVenueData[$i]->id==$venueId){
         $jVenue=$ajVenueData[$i];
-        unset($jVenue->password);
         $sVenue=json_encode($jVenue);
         echo $sVenue;
     }

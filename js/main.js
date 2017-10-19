@@ -2,21 +2,8 @@
 $(document).ready(function(){
     $('.modal').modal();
     $('.slider').slider();
-    /*$('input.autocomplete').autocomplete({
-        data: {
-            "Apple": null,
-            "Microsoft": null,
-            "Google": 'https://placehold.it/250x250'
-        },
-        limit: 20, // The max amount of results that can be shown at once. Default: Infinity.
-        onAutocomplete: function(val) {
-            // Callback function when value is autcompleted.
-        },
-        minLength: 1, // The minimum length of the input for the autocomplete to start. Default: 1.
-    });*/
-
 });
-
+var errorMessage=document.querySelector('.signupError');
 
 //ajax functions
 
@@ -42,6 +29,7 @@ function ajaxPOST(url, formData, callback){
     var jFormData = new FormData (formData);
     ajax.send(jFormData);
 }
+
 //CHECK IF LOGGED IN
 
 window.onload = ajaxGET("api/api-check-if-logged.php",checkIfLoggedIn);
@@ -56,7 +44,10 @@ function checkIfLoggedIn(sResult){
         userType=jResult.userType;
         userId=jResult.id;
         userPage(userId);
-    }else{
+    }else {
+        if (jResult.login=='admin'){
+            userType="admin";
+        }
         navUser.style.display="none";
         navLogin.style.display="block";
     }
@@ -80,30 +71,33 @@ function menuNavigation(e){
         var pageClicked = document.getElementById(pageId);
         pageClicked.style.display="grid";
 
-        if(pageId=="pageSignup"){
-            checkSignupType.style.display='grid';
-            formSignUpBand.style.display="none";
-            formSignUpVenue.style.display="none";
-        }
-        if(pageId=="pageBands"){
-            ajaxGET("api/api-get-bands.php", showBands);
-        }
-
-        if(pageId=="pageVenues"){
-            ajaxGET("api/api-get-venues.php", showVenues);
-        }
-
-        if(pageId=="pageUser") {
-            if (userType=="venue"){
-                google.maps.event.trigger(map, 'resize');
-                map.setCenter(marker.position);
-            }
-        }
-        if (pageId=="pageSearch"){
-            searchInfo();
+        switch(pageId){
+            case "pageSignup":
+                checkSignupType.style.display='grid';
+                formSignUpBand.style.display="none";
+                formSignUpVenue.style.display="none";
+                break;
+            case "pageBands":
+                ajaxGET("api/api-get-bands.php", showBands);
+                break;
+            case "pageVenues":
+                ajaxGET("api/api-get-venues.php", showVenues);
+                break;
+            case "pageUser":
+                if (userType=="venue"){
+                    google.maps.event.trigger(map, 'resize');
+                    map.setCenter(marker.position);
+                }
+                break;
+            case "pageSearch":
+                searchInfo();
+                break;
+            case "pageLogin":
+                errorMessage.innerHTML="";
         }
     }
 }
+
 
 //SIGNUP
 
@@ -124,36 +118,44 @@ btnBandType.addEventListener('click',function(){
     formSignUpVenue.style.display="none";
 });
 
-btnSignupBand.addEventListener('click', function(){
+/*btnSignupBand.addEventListener('click', function(){
     console.log('clicked');
     ajaxPOST("api/api-signup-band.php", formSignUpBand, signUp);
-});
+});*/
 
 btnVenueType.addEventListener('click',function(){
     checkSignupType.style.display='none';
     formSignUpVenue.style.display="grid";
 });
 
-btnSignupVenue.addEventListener('click', function(){
+/*btnSignupVenue.addEventListener('click', function(){
     ajaxPOST("api/api-signup-venue.php", formSignUpVenue, signUp);
-});
+});*/
 
 function signUp(result){
     console.log(result);
     var signupResult=JSON.parse(result);
     if (signupResult.signup=='error'){
-        var errorMessage=document.querySelector('.signupError');
         errorMessage.innerHTML=signupResult.error;
     }else if (signupResult.signup=='success'){
+        errorMessage.innerHTML="";
         navLogin.style.display="none";
         navUser.style.display="block";
         pageSignup.style.display="none";
         pageUser.style.display="grid";
         userType=signupResult.userType;
         userId=signupResult.id;
-        userPage(userId);
-        ajaxGET("api/api-send-email.php", sendEmail);
-        ajaxGET("api/api-get-band-info.php?id="+userId,notifyNewBand);
+        setTimeout(userPage(userId),1000);
+        if (userType=="band"){
+            ajaxGET("api/api-send-email.php?id="+userId, sendEmail);
+            ajaxGET("api/api-get-band-info.php?id="+userId, notifyNewBand);
+            var calendarNameValue=document.querySelector("#bandCalendarName").value;
+        }
+        if (userType=="venue"){
+            calendarNameValue=document.querySelector("#venueCalendarName").value;
+        }
+
+        addNewCalendar(calendarNameValue);
     }
 
 }
@@ -172,7 +174,6 @@ function notifyNewBand(result) {
 
     else if (Notification.permission !== "denied") {
         Notification.requestPermission(function (permission) {
-            // If the user accepts, let's create a notification
             if (permission === "granted") {
                 notificationSetUp(jBand);
             }
@@ -181,7 +182,9 @@ function notifyNewBand(result) {
 }
 
 function notificationSetUp(jBand){
-    var notification = new Notification("A New Band is Here:"+jBand.name, {
+    var notificationSound= new Audio("data/notification.mp3");
+    notificationSound.play();
+    var notification = new Notification("A New Band is Here: "+jBand.name, {
         icon: 'data/bandImages/'+jBand.image,
         body: "We thought you might be interested"
     });
@@ -207,12 +210,17 @@ function login (sResult){
     var jResult=JSON.parse(sResult);
     if (jResult.login=="ok"){
         userId=jResult.id;
-        userPage(userId);
-        navLogin.style.display="none";
-        navUser.style.display="block";
-        pageLogin.style.display="none";
-        pageUser.style.display="grid";
         userType=jResult.userType;
+        if (userType=='admin'){
+            pageHome.style.display="grid";
+            pageLogin.style.display="none";
+        }else{
+            userPage(userId);
+            navLogin.style.display="none";
+            navUser.style.display="block";
+            pageLogin.style.display="none";
+            pageUser.style.display="grid";
+        }
     }else{
         console.log("error");
     }
@@ -242,7 +250,8 @@ function bandProfile(jUser){
     let cloneUser = bandTemplate.cloneNode(true);
     cloneUser.querySelector('h1').textContent="Welcome, "+jUser.name;
     cloneUser.querySelector('img').src="data/bandImages/"+jUser.image;
-    cloneUser.querySelector('.email').textContent="email:"+jUser.email;
+    cloneUser.querySelector('.email').textContent="Email:"+jUser.email;
+    cloneUser.querySelector('.bandGenre').textContent="Genre:"+jUser.genre;
     cloneUser.querySelector('.bandDescription').textContent=jUser.description;
     cloneUser.querySelector('.bandPhoneNumber').textContent="phone number:"+jUser.phone;
     cloneUser.querySelector('source').src="data/bandSongs/"+jUser.songFile;
@@ -253,8 +262,15 @@ function bandProfile(jUser){
         ajaxGET("api/api-logout.php", goBackToLogin);
     });
 
-    deleteBand(jUser.id);
-    editBand(jUser);
+    var btnDeleteBand=document.querySelector('#btnDeleteBand');
+    btnDeleteBand.addEventListener('click', function() {
+        deleteBand(jUser.id);
+    });
+
+    var btnEditBand=document.querySelector("#btnEditBand");
+    btnEditBand.addEventListener('click', function() {
+        editBand(jUser);
+    });
 }
 
 var mapDiv;
@@ -280,8 +296,15 @@ function venueProfile(jUser){
         subscribeToEmail();
     });
 
-    deleteVenue(jUser.id);
-    editVenue(jUser);
+    var btnDeleteVenue=document.querySelector('#btnDeleteVenue');
+    btnDeleteVenue.addEventListener('click', function() {
+        deleteVenue(jUser.id);
+    });
+
+    var btnEditVenue=document.querySelector("#btnEditVenue");
+    btnEditVenue.addEventListener('click', function() {
+        editVenue(jUser);
+    });
 }
 
 //MAP
@@ -313,30 +336,31 @@ function initMap(mapDiv, jUser) {
 
 //EDIT USER
 
-function editBand(jUser){
-    var btnEditBand=document.querySelector("#btnEditBand");
-    btnEditBand.addEventListener('click', function(){
-        $('#modalEditBand').modal('open');
-        document.getElementsByName("bandNameEdit")[0].value=jUser.name;
-        document.getElementsByName("bandGenreEdit")[0].value=jUser.genre;
-        document.getElementsByName("bandDescriptionEdit")[0].value=jUser.description;
-        document.getElementsByName("bandDescriptionEdit")[0].value=jUser.description;
-        document.getElementsByName("bandEmailEdit")[0].value=jUser.email;
-        document.getElementsByName("bandPhoneEdit")[0].value=jUser.phone;
-        document.getElementsByName("bandPasswordEdit")[0].value=jUser.password;
+function editBand(jUser) {
+    $('#modalEditBand').modal('open');
+    document.getElementsByName("bandNameEdit")[0].value = jUser.name;
+    document.getElementsByName("bandGenreEdit")[0].value = jUser.genre;
+    document.getElementsByName("bandDescriptionEdit")[0].value = jUser.description;
+    document.getElementsByName("bandDescriptionEdit")[0].value = jUser.description;
+    document.getElementsByName("bandEmailEdit")[0].value = jUser.email;
+    document.getElementsByName("bandPhoneEdit")[0].value = jUser.phone;
+    document.getElementsByName("bandPasswordEdit")[0].value = jUser.password;
+
+    btnSaveEditBand.addEventListener('click', function () {
+        ajaxPOST("api/api-edit-band.php?id=" + jUser.id , editBandInfo, saveBandChanges)
     });
 }
-
-btnSaveEditBand.addEventListener('click', function(){
-    ajaxPOST("api/api-edit-band.php", editBandInfo, saveBandChanges)
-});
 
 function saveBandChanges(result){
     console.log(result);
     var editResult=JSON.parse(result);
     if (editResult.edit=="success"){
         $('#modalEditBand').modal('close');
-        userPage(editResult.id);
+        if (userType=='admin'){
+            ajaxGET("api/api-get-bands.php", showBands);
+        }else{
+            userPage(editResult.id);
+        }
     }else{
         var errorMessage=document.querySelector(".editError");
         errorMessage.innerHTML=editResult.error;
@@ -345,29 +369,30 @@ function saveBandChanges(result){
 }
 
 function editVenue(jUser){
-    var btnEditVenue=document.querySelector("#btnEditVenue");
-    btnEditVenue.addEventListener('click', function(){
-        console.log(jUser);
-        $('#modalEditVenue').modal('open');
-        document.getElementsByName("venueNameEdit")[0].value=jUser.name;
-        document.getElementsByName("venueAddressEdit")[0].value=jUser.address;
-        document.getElementsByName("venueDescriptionEdit")[0].value=jUser.description;
-        document.getElementsByName("venuePhoneEdit")[0].value=jUser.phone;
-        document.getElementsByName("venueEmailEdit")[0].value=jUser.email;
-        document.getElementsByName("venuePasswordEdit")[0].value=jUser.password;
-    })
-}
+    console.log(jUser);
+    $('#modalEditVenue').modal('open');
+    document.getElementsByName("venueNameEdit")[0].value=jUser.name;
+    document.getElementsByName("venueAddressEdit")[0].value=jUser.address;
+    document.getElementsByName("venueDescriptionEdit")[0].value=jUser.description;
+    document.getElementsByName("venuePhoneEdit")[0].value=jUser.phone;
+    document.getElementsByName("venueEmailEdit")[0].value=jUser.email;
+    document.getElementsByName("venuePasswordEdit")[0].value=jUser.password;
 
-btnSaveEditVenue.addEventListener('click', function(){
-    ajaxPOST("api/api-edit-venue.php", editVenueInfo ,saveVenueChanges);
-});
+    btnSaveEditVenue.addEventListener('click', function(){
+        ajaxPOST("api/api-edit-venue.php?id="+jUser.id, editVenueInfo ,saveVenueChanges);
+    });
+}
 
 function saveVenueChanges(result){
     console.log(result);
     var editResult=JSON.parse(result);
     if (editResult.edit=="success"){
         $('#modalEditVenue').modal('close');
-        userPage(editResult.id);
+        if (userType=="admin"){
+            ajaxGET("api/api-get-venues.php", showVenues);
+        }else{
+            userPage(editResult.id);
+        }
     }else{
         var errorMessage=document.querySelector(".editErrorVenue");
         errorMessage.innerHTML=editResult.error;
@@ -378,27 +403,23 @@ function saveVenueChanges(result){
 
 
 function deleteBand(userId){
-    var btnDeleteBand=document.querySelector('#btnDeleteBand');
-    btnDeleteBand.addEventListener('click', function(){
-        var url="api/api-delete-band.php";
-        ajaxGET(url, deletedResult);
-    });
+    var url="api/api-delete-band.php?id="+userId;
+    ajaxGET(url, deletedResult);
 }
 
 function deleteVenue(userId){
-    var btnDeleteVenue=document.querySelector('#btnDeleteVenue');
-    btnDeleteVenue.addEventListener('click', function(){
-        var url="api/api-delete-venue.php?";
-        ajaxGET(url, deletedResult);
-    });
+    var url="api/api-delete-venue.php?id="+userId;
+    ajaxGET(url, deletedResult);
 }
 
 
 function deletedResult(result){
     console.log(result);
-    navUser.style.display="none";
-    navLogin.style.display="block";
-    goBackToLogin();
+    if (userType!='admin'){
+        navUser.style.display="none";
+        navLogin.style.display="block";
+        goBackToLogin();
+    }
 }
 
 //LOGOUT
@@ -416,7 +437,7 @@ function showBands(result){
     console.log(result);
     var jBands=JSON.parse(result);
     bandsContainer.innerHTML="";
-    for (var i=0; i<=jBands.length;i++){
+    for (var i=0; i<jBands.length;i++){
         createBandDiv(jBands[i]);
     }
 
@@ -449,7 +470,6 @@ function showMoreBandInfo(e){
 
 function createBandModal(result){
     var jBand=JSON.parse(result);
-    console.log(jBand);
     var modalBandTemplate=document.querySelector('#bandModalTemplate').content;
     let cloneModal=modalBandTemplate.cloneNode(true);
     cloneModal.querySelector('h2').textContent=jBand.name;
@@ -460,7 +480,6 @@ function createBandModal(result){
     cloneModal.querySelector('.bandPhoneNumber').textContent="Phone Number:"+jBand.phone;
     cloneModal.querySelector('source').src="data/bandSongs/"+jBand.songFile;
     cloneModal.querySelector('.bandBooking').textContent="Booked on: ";
-    console.log(jBand.booking);
     for (var i=0;i<jBand.booking.length;i++){
         if (i==0){
             cloneModal.querySelector('.bandBooking').textContent+=jBand.booking[i];
@@ -472,15 +491,29 @@ function createBandModal(result){
 
     if (userType=='venue'){
         btnAddBooking.addEventListener('click', function(){
-            ajaxPOST("api/api-book-band.php?id="+jBand.id,inputBooking,bookingAdded);
+            ajaxPOST("api/api-book-band.php?id="+jBand.id, inputBooking ,bookingAdded);
+            var bookingDate=document.querySelector("#bookingDate").value;
+            addEvent(bookingDate);
         });
     }else {
         inputBooking.style.display = "none";
     }
+    var btnEdit='<button class="btn" id="btnAdminEditBand" data-id="'+jBand.id+'">Edit</button>';
+    var btnDelete='<button class="btn" id="btnAdminDeleteBand" data-id="'+jBand.id+'">Delete</button>';
+    if (userType=="admin"){
+        modalContent.insertAdjacentHTML('beforeend', btnEdit);
+        modalContent.insertAdjacentHTML('beforeend', btnDelete);
+        btnAdminEditBand.addEventListener('click', function(){
+            editBand(jBand);
+            $('#modalInfo').modal('close');
+        });
+
+        btnAdminDeleteBand.addEventListener('click', function(){
+            deleteBand(jBand.id);
+        });
+    }
 
     $('#modalInfo').modal('open');
-
-    /*addCalendar();*/
 }
 
 function bookingAdded(result){
@@ -494,7 +527,7 @@ function showVenues(result){
     var ajVenuesData=JSON.parse(result);
     venuesContainer.innerHTML="";
     initMapAll(ajVenuesData);
-    for (var i=0;ajVenuesData.length;i++){
+    for (var i=0;i<ajVenuesData.length;i++){
         createVenueDiv(ajVenuesData[i]);
     }
 }
@@ -536,10 +569,25 @@ function createVenueModal(result){
     var mapDiv=document.querySelector("#mapModal");
     initMap(mapDiv, jVenue);
     google.maps.event.trigger(map, 'resize');
+
+    var btnEdit='<button class="btn" id="btnAdminEditVenue" data-id="'+jVenue.id+'">Edit</button>';
+    var btnDelete='<button class="btn" id="btnAdminDeleteVenue" data-id="'+jVenue.id+'">Delete</button>';
+    if (userType=="admin"){
+        modalContent.insertAdjacentHTML('beforeend', btnEdit);
+        modalContent.insertAdjacentHTML('beforeend', btnDelete);
+        btnAdminEditVenue.addEventListener('click', function(){
+            editVenue(jVenue);
+            $('#modalInfo').modal('close');
+        });
+
+        btnAdminDeleteVenue.addEventListener('click', function(){
+            deleteVenue(jVenue.id);
+        })
+    }
 }
 
 //MAP WITH ALL VENUES
-var infowindow = new google.maps.InfoWindow();
+var infowindow;
 
 function initMapAll(ajVenuesData) {
     var copenhagen = {lat: 55.675894, lng: 12.565327};
@@ -560,10 +608,14 @@ function initMapAll(ajVenuesData) {
                     position: latlng
                 });
                 var venueName=jVenue.name;
+                var venueAddress=jVenue.address;
 
                 google.maps.event.addListener(markerAll, 'click', function () {
                     infowindow.close(); // Close previously opened infowindow
-                    infowindow.setContent("<div id='infowindow'><h5>" + venueName + "</h5></div>");
+                    infowindow.setContent("<div id='infowindow'><h5>" + venueName + "</h5>" +
+                        "<p>"+venueAddress+"</p>" +
+                        "<button data-id='"+jVenue.id+"' class='btn btnVenueSeeMore'>See More</button>" +
+                        "</div>");
                     infowindow.open(mapAll, markerAll);
                 });
 
@@ -600,7 +652,7 @@ function searchInfo(){
 
 function searchResults(result){
     var ajSearchResults=JSON.parse(result);
-    console.log(ajSearchResults);
+    /*console.log(ajSearchResults);*/
     searchResultsContainer.innerHTML="";
     for (var i=0;i<ajSearchResults.length;i++){
         if (ajSearchResults[i].genre){
@@ -626,4 +678,129 @@ function searchResults(result){
 
 }
 
+//CALENDAR
+
+// Client ID and API key from the Developer Console
+var CLIENT_ID = '904758318374-ln1m6cbu5s6ch7jt7ji0rsrasooj5bd3.apps.googleusercontent.com';
+
+// Array of API discovery doc URLs for APIs used by the quickstart
+var DISCOVERY_DOCS = ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"];
+
+// Authorization scopes required by the API; multiple scopes can be
+// included, separated by spaces.
+var SCOPES = "https://www.googleapis.com/auth/calendar";
+/**
+ *  On load, called to load the auth2 library and API client library.
+ */
+function handleClientLoad() {
+    gapi.load('client:auth2', initClient);
+}
+
+/**
+ *  Initializes the API client library and sets up sign-in state
+ *  listeners.
+ */
+function initClient() {
+    gapi.client.init({
+        discoveryDocs: DISCOVERY_DOCS,
+        clientId: CLIENT_ID,
+        scope: SCOPES
+    }).then(function () {
+        btnSignupBand.onclick = signInBand;
+        btnSignupVenue.onclick=signInVenue;
+    });
+}
+
+/**
+ *  Sign in the user upon button click.
+ */
+function signInBand(event) {
+    gapi.auth2.getAuthInstance().signIn()
+        .then(function() {
+            ajaxPOST("api/api-signup-band.php", formSignUpBand, signUp);
+        }, function(error) {
+            console.error("Error signing in", error);
+        });
+}
+
+function signInVenue(event) {
+    gapi.auth2.getAuthInstance().signIn()
+        .then(function() {
+            ajaxPOST("api/api-signup-venue.php", formSignUpVenue, signUp);
+        }, function(error) {
+            console.error("Error signing in", error);
+        });
+}
+
+function addNewCalendar(calendarNameValue) {
+    return gapi.client.calendar.calendars.insert({
+        "resource": {
+            "summary": calendarNameValue
+        }
+    })
+        .then(function(response) {
+            // Handle the results here (response.result has the parsed body).
+            console.log("Response", response);
+        }, function(error) {
+            console.error("Execute error", error);
+        });
+}
+
+
+function addEvent(bookingDate) {
+    gapi.auth2.getAuthInstance().signIn()
+        .then(function () {
+            var event = {
+                    "summary": "New Booking",
+                    "description": "New Booking Request",
+                    "start": {
+                        "date": bookingDate
+                    },
+                    "end": {
+                        "date": bookingDate
+                    },
+                    "attendees": [
+                        {
+                            "email": "dariaradur3@gmail.com",
+                            "responseStatus": "needsAction"
+                        }
+                    ],
+                    "reminders": {
+                        "useDefault": false,
+                        "overrides": [
+                            {
+                                "method": "email",
+                                "minutes": 10
+                            },
+                            {
+                                "method": "popup",
+                                "minutes": 10
+                            }
+                        ]
+                    }
+                }
+                ;
+
+            /*var request = gapi.client.calendar.events.insert({
+                "calendarId": "primary",
+                "sendNotifications":"true",
+                "resource": event
+            });
+
+            request.execute(function (event) {
+                console.log(event);
+            });*/
+
+            var restRequest = gapi.client.request({
+                'method': 'POST',
+                'path': '/calendar/v3/calendars/primary/events',
+                'params': {'sendNotifications': 'true'},
+                'body': event
+            });
+
+            restRequest.execute(function(event) {
+                console.log('Event link: ' + event.htmlLink);
+            });
+        })
+}
 

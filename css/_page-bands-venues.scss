@@ -5,6 +5,20 @@
   img{
     max-width:500px;
   }
+
+  .bandInfo {
+    .content {
+      audio {
+        display: block;
+        width: 50%;
+        margin: 0 auto;
+      }
+
+      .btn {
+        margin: 1.5%;
+      }
+    }
+  }
 }
 
 #bandsContainer{
@@ -125,6 +139,12 @@
 
 //PAGE VENUES
 
+#pageVenues {
+  #mapAll {
+    margin: 0 auto;
+  }
+}
+
 #venuesContainer{
   display:grid;
   grid-template-columns: repeat(3, 1fr);
@@ -135,5 +155,20 @@
   margin: 3%;
   img{
     width:200px;
+  }
+}
+
+// VENUE TEMPLATE
+
+.venueInfo{
+
+  .switch, .btn {
+    margin: 3%;
+  }
+
+  .containerElement {
+    #map {
+      margin: 0 auto;
+    }
   }
 }

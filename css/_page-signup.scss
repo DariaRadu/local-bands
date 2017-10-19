@@ -1,12 +1,30 @@
 //PAGE SIGNUP
 
-#formSignUpBand{
-  display:none;
+#checkSignupType {
+  .btn {
+    width: 30%;
+    margin: 1.5% auto;
+  }
 }
 
-#formSignupVenue{
+#formSignUpVenue, #formSignUpBand {
   display:none;
+  margin:20px 100px;
+  label {
+    margin: 5%;
+
+    textarea {
+      min-height: 10em;
+    }
+  }
+
+  #btnSignupVenue, #btnSignupBand {
+    width: 50%;
+    margin: 3% auto;
+  }
 }
+
+
 
 #loginBox {
   width: 60%;

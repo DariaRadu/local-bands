@@ -1,6 +1,7 @@
 <?php
 session_start();
 
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -9,7 +10,6 @@ session_start();
         <title>Local Bands</title>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/css/materialize.min.css">
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-        <link rel="stylesheet" href="css/calendar.css">
         <link rel="stylesheet" href="css/style.css">
     </head>
     <body>
@@ -28,15 +28,12 @@ session_start();
 
     <!--PAGE HOME-->
     <div id="pageHome" style="display:grid" class="page">
-        <!--<h1>Check out your local bands and book them for your venue!</h1>
-        <button data-page="pageBands" class="btn">See Bands</button>
-        <button data-page="pageVenues"class="btn">See Venues</button>-->
         <div class="slider">
             <ul class="slides">
                 <li>
                     <img src="https://images.pexels.com/photos/78521/rock-concert-smoke-light-78521.jpeg?w=1260&h=750&auto=compress&cs=tinysrgb"> <!-- random image -->
                     <div class="caption right-align">
-                        <<h1>Check out your local bands and book them for your venue!</h1>
+                        <h1>Check out your local bands and book them for your venue!</h1>
                         <button data-page="pageBands" class="btn">See Bands</button>
                     </div>
                 </li>
@@ -120,15 +117,31 @@ session_start();
                     <input type="password" name="bandPassword">
                 </label>
                 <label>
+                    Calendar Name:
+                    <input id="bandCalendarName" type="text" name="venueCalendarName">
+                </label>
                     Band Image:
-                    <input type="file" name="bandImage">
+                    <div class="file-field input-field">
+                        <div class="btn">
+                            <span>Picture</span>
+                            <input type="file" name="bandImage">
+                        </div>
+                        <div class="file-path-wrapper">
+                            <input class="file-path validate" type="text">
+                        </div>
+                    </div>
                     Please upload only .png or .jpg images
-                </label>
-                <label>
                     Band Demo Song:
-                    <input type="file" name="bandDemo">
+                    <div class="file-field input-field">
+                        <div class="btn">
+                            <span>Song</span>
+                            <input type="file" name="bandDemo">
+                        </div>
+                        <div class="file-path-wrapper">
+                            <input class="file-path validate" type="text">
+                        </div>
+                     </div>
                     Please upload only mp3 files
-                </label>
                 <button id="btnSignupBand" class="btn"  type="button">SIGN UP</button>
             </form>
 
@@ -158,13 +171,23 @@ session_start();
                     <input type="password" name="venuePassword">
                 </label>
                 <label>
-                    Venue Image:
-                    <input type="file" name="venueImage">
-                    Please upload only .png or .jpg images
+                    Calendar Name:
+                    <input id="venueCalendarName" type="text" name="venueCalendarName">
                 </label>
+                    Venue Image:
+                    <div class="file-field input-field">
+                        <div class="btn">
+                            <span>Picture</span>
+                            <input type="file" name="venueImage">
+                        </div>
+                        <div class="file-path-wrapper">
+                            <input class="file-path validate" type="text">
+                        </div>
+                    </div>
+                    Please upload only .png or .jpg images
+                <p class="error signupError"></p>
                 <button id="btnSignupVenue" class="btn"  type="button">SIGN UP</button>
             </form>
-            <p class="error signupError"></p>
         </div>
     </div>
 
@@ -192,15 +215,16 @@ session_start();
             </header>
             <div class="content">
                 <img class="bandImage" src="" alt="band-picture">
+                <p class="bandGenre">Genre</p>
                 <p class="email">email</p>
                 <p class="bandDescription">description</p>
                 <p class="bandPhoneNumber">123</p>
                 <audio controls>
                     <source src="" type="audio/mp3">
                 </audio>
-                <button id="btnEditBand">Edit</button>
-                <button id="btnDeleteBand">Delete</button>
-                <button id="btnLogOutBand">Log Out</button>
+                <button class="btn" id="btnEditBand">Edit</button>
+                <button class="btn" id="btnDeleteBand">Delete</button>
+                <button class="btn" id="btnLogOutBand">Log Out</button>
             </div>
         </article>
     </template>
@@ -215,9 +239,6 @@ session_start();
                 <p class="venueDescription">description</p>
                 <p class="venueAddress">address</p>
                 <p class="venuePhone">123</p>
-                <div class="containerElement">
-                    <div id="map"></div>
-                </div>
                 <div class="switch">
                     Subscribe to see when new bands are added:
                     <label>
@@ -225,9 +246,13 @@ session_start();
                         <span class="lever"></span>
                     </label>
                 </div>
-                <button id="btnEditVenue">Edit</button>
-                <button id="btnDeleteVenue">Delete</button>
-                <button id="btnLogOutVenue">Log Out</button>
+                <div class="containerElement">
+                    <div id="map"></div>
+                </div>
+
+                <button class="btn" id="btnEditVenue">Edit</button>
+                <button class="btn" id="btnDeleteVenue">Delete</button>
+                <button class="btn" id="btnLogOutVenue">Log Out</button>
             </div>
         </article>
     </template>
@@ -283,7 +308,7 @@ session_start();
 <!--            <div id="calendar"></div>-->
             <form id="inputBooking">
                 <p>Book Them:</p>
-                <input type="date" name="bandBooking">
+                <input id="bookingDate" type="date" name="bandBooking">
                 <button type="button" class="btn" id="btnAddBooking">Add Booking</button>
             </form>
         </div>
@@ -408,7 +433,15 @@ session_start();
     </script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.100.2/js/materialize.min.js"></script>
-    <script src="js/jquery-calendar.js"></script>
     <script src="js/main.js"></script>
+    <script async defer src="https://apis.google.com/js/api.js?onload=handleClientLoad()"
+            onload="this.onload=function(){};handleClientLoad()"
+            onreadystatechange="if (this.readyState === 'complete') this.onload()">
+    </script>
+    <!--<script>
+        function handleClientLoad() {
+            gapi.load('client:auth2', initClient);
+        }
+    </script>-->
     </body>
 </html>
